@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Bima Junestifa</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* ===== CONTAINER UTAMA ===== */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HEADER SECTION ===== */
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .cv-title {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #f97316;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #f97316;
+            margin-top: 20px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            color: #cbd5e0;
+            margin-bottom: 5px;
+        }
+
+        .header .role {
+            font-size: 1.3em;
+            font-weight: 500;
+            color: #fbbf24;
+            margin-top: 10px;
+        }
+
+        /* ===== TOMBOL AKSI ===== */
+        .action-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: #f97316;
+            color: white;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1a365d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        /* ===== CONTENT SECTION ===== */
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #1a365d;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #f97316;
+            display: inline-block;
+        }
+
+        /* ===== RINGKASAN ===== */
+        .summary {
+            font-size: 1.05em;
+            color: #4a5568;
+            line-height: 1.8;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f97316;
+        }
+
+        /* ===== PENDIDIKAN ===== */
+        .education-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #2d3748;
+        }
+
+        .education-item h3 {
+            color: #1a365d;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .education-item .date {
+            color: #f97316;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* ===== KEAHLIAN ===== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        /* ===== PENGALAMAN ===== */
+        .experience-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f97316;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .experience-item h3 {
+            color: #1a365d;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .experience-item .date {
+            color: #f97316;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* ===== PORTOFOLIO ===== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .portfolio-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item:hover {
+            border-color: #f97316;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .portfolio-item h3 {
+            color: #1a365d;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-item p {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            background: #fed7aa;
+            color: #7c2d12;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* ===== SERTIFIKAT ===== */
+        .certificate-item {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f97316;
+        }
+
+        .certificate-item h3 {
+            color: #1a365d;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .certificate-item .issuer {
+            color: #7c2d12;
+            font-weight: 600;
+        }
+
+        /* ===== KONTAK ===== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .contact-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+
+        .contact-item strong {
+            color: #1a365d;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .contact-item a {
+            color: #f97316;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== NOTIFIKASI ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            display: none;
+            z-index: 1000;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .cv-title {
+                font-size: 1.2em;
+                left: 20px;
+                top: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .skills-grid,
+            .portfolio-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .action-buttons,
+            .notification {
+                display: none !important;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notifikasi -->
+    <div class="notification" id="notification">Email berhasil disalin!</div>
+
+    <!-- Container Utama -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="cv-title">CV / Resume</div>
+            
+            <h1>Bima Junestifa</h1>
+            <p class="subtitle">Pengembangan Perangkat Lunak dan Gim (PPLG)</p>
+            <p class="role">Junior Web Developer</p>
+            
+            <!-- Tombol Aksi -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="downloadCV()">
+                    📄 Download CV
+                </button>
+                <button class="btn btn-secondary" onclick="copyEmail()">
+                    📧 Salin Email
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Ringkasan -->
+            <div class="section">
+                <h2 class="section-title">Tentang Saya</h2>
+                <p class="summary">
+                    Saya adalah siswa SMK Wikrama 1 Garut jurusan PPLG yang passionate dalam pengembangan web dan aplikasi. 
+                    Memiliki keahlian dalam membangun website responsif menggunakan HTML, CSS, JavaScript, dan framework modern. 
+                    Selalu antusias untuk belajar teknologi baru dan berkontribusi dalam proyek-proyek inovatif.
+                </p>
+            </div>
+
+            <!-- Pendidikan -->
+            <div class="section">
+                <h2 class="section-title">Pendidikan</h2>
+                <div class="education-item">
+                    <h3>SMK Wikrama 1 Garut</h3>
+                    <p class="date">2024 - 2027</p>
+                    <p>Jurusan: Pengembangan Perangkat Lunak dan Gim (PPLG)</p>
+                    <p>Fokus pembelajaran: Pemrograman Web, Mobile Development, Database, dan Game Development</p>
+                </div>
+            </div>
+
+            <!-- Keahlian Teknis -->
+            <div class="section">
+                <h2 class="section-title">Keahlian Teknis</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">HTML5</div>
+                    <div class="skill-item">CSS3</div>
+                    <div class="skill-item">JavaScript</div>
+                    <div class="skill-item">PHP</div>
+                    <div class="skill-item">Laravel</div>
+                    <div class="skill-item">MySQL</div>
+                    <div class="skill-item">Python</div>
+                    <div class="skill-item">Git & GitHub</div>
+                    <div class="skill-item">Bootstrap</div>
+                    <div class="skill-item">Tailwind CSS</div>
+                    <div class="skill-item">React.js</div>
+                    <div class="skill-item">Figma</div>
+                </div>
+            </div>
+            
+                <!-- Pengalaman -->
+                <div class="section">
+                    <h2 class="section-title">Pengalaman</h2>
+                    
+                    <div class="experience-item">
+                        <h3>Proyek Pribadi - Website Toko Buku Sederhana</h3>
+                        <p class="date">2024</p>
+                        <p>
+                            • Membuat website toko buku sederhana menggunakan HTML, CSS, dan PHP<br>
+                            • Fitur utama: menampilkan daftar buku, pencarian, dan detail buku<br>
+                            • Melatih kemampuan dasar dalam membuat tampilan dan logika web
+                        </p>
+                    </div>
+
+                    <div class="experience-item">
+                        <h3>Proyek Sekolah - Sistem Perpustakaan</h3>
+                        <p class="date">2024</p>
+                        <p>
+                            • Mengembangkan sistem peminjaman buku berbasis web<br>
+                            • Menggunakan PHP dan MySQL untuk pengelolaan data<br>
+                            • Belajar dasar CRUD (Create, Read, Update, Delete)
+                        </p>
+                    </div>
+
+                    <div class="experience-item">
+                        <h3>Proyek Pribadi - Aplikasi To-Do List</h3>
+                        <p class="date">2024</p>
+                        <p>
+                            • Membuat aplikasi daftar tugas (To-Do List) menggunakan HTML, CSS, dan JavaScript<br>
+                            • Menambahkan fitur tambah, hapus, dan tandai tugas selesai<br>
+                            • Melatih kemampuan manipulasi DOM dan penyimpanan data lokal (localStorage)
+                        </p>
+                    </div>
+
+                    <div class="experience-item">
+                        <h3>Belajar Mandiri - Pengembangan Web Dasar</h3>
+                        <p class="date">2023 - Sekarang</p>
+                        <p>
+                            • Mempelajari HTML, CSS, dan JavaScript secara mandiri melalui internet<br>
+                            • Membuat mini project seperti halaman login, kalkulator, dan e-commerce sederhana<br>
+                            • Meningkatkan kemampuan logika dan desain web
+                        </p>
+                    </div>
+                </div>
+
+
+
+          <!-- Portofolio -->
+<div class="section">
+    <h2 class="section-title">Portofolio</h2>
+    <div class="portfolio-grid">
+        
+        <div class="portfolio-item">
+            <h3>Website Toko Buku</h3>
+            <p>Aplikasi web sederhana untuk menampilkan daftar buku dan detail informasi buku.</p>
+            <div class="tech-tags">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">PHP</span>
+                <span class="tech-tag">MySQL</span>
+            </div>
+        </div>
+
+        <div class="portfolio-item">
+            <h3>Sistem Perpustakaan Sekolah</h3>
+            <p>Website untuk mengelola data buku, anggota, dan transaksi peminjaman.</p>
+            <div class="tech-tags">
+                <span class="tech-tag">PHP</span>
+                <span class="tech-tag">MySQL</span>
+                <span class="tech-tag">Bootstrap</span>
+            </div>
+        </div>
+
+        <div class="portfolio-item">
+            <h3>Aplikasi To-Do List</h3>
+            <p>Aplikasi daftar tugas harian dengan fitur tambah, hapus, dan tandai tugas selesai.</p>
+            <div class="tech-tags">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">JavaScript</span>
+            </div>
+        </div>
+
+        <div class="portfolio-item">
+            <h3>E-Commerce Sederhana</h3>
+            <p>Website penjualan produk sederhana dengan fitur keranjang dan login pengguna.</p>
+            <div class="tech-tags">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">PHP</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- Sertifikat -->
+            <div class="section">
+                <h2 class="section-title">Sertifikat</h2>
+                
+                <div class="certificate-item">
+                    <h3>Web Development Bootcamp</h3>
+                    <p class="issuer">Dicoding Indonesia - 2024</p>
+                </div>
+
+                <div class="certificate-item">
+                    <h3>HTML, CSS Tailwind, dan JavaScript</h3>
+                    <p class="issuer">RevoU Coding Camp — 2025</p>
+                </div>
+
+
+                <!-- <div class="certificate-item">
+                    <h3>Responsive Web Design</h3>
+                    <p class="issuer">freeCodeCamp - 2025</p>
+                </div>
+            </div> -->
+
+            <!-- Kontak -->
+            <div class="section">
+                <h2 class="section-title">Kontak</h2>
+                <div class="contact-grid">
+                    
+                    <div class="contact-item">
+                        <strong>📧 Email</strong>
+                        <a href="mailto:bimajunestifa85@email.com">bimajunestifa85@email.com</a>
+                    </div>
+
+                    <div class="contact-item">
+                        <strong>📱 Telepon</strong>
+                        <a href="tel:+6282169667918">+62 82169667918</a>
+                    </div>
+
+                    <div class="contact-item">
+                        <strong>💻 GitHub</strong>
+                        <a href="https://github.com/bimajunestifa" target="_blank">github.com/bimajunestifa</a>
+                    </div>
+
+
+                    <div class="contact-item">
+                        <strong>🔗 LinkedIn</strong>
+                        <a href="https://www.linkedin.com/in/bima-junestifa-9723b433a/" target="_blank">linkedin.com/bima-junestifa</a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ===== FUNGSI DOWNLOAD CV (PRINT TO PDF) =====
+        function downloadCV() {
+            window.print();
+        }
+
+        // ===== FUNGSI SALIN EMAIL =====
+        function copyEmail() {
+            const email = "ahmadrizky@email.com"; // Ganti dengan email Anda
+            
+            // Salin email ke clipboard
+            navigator.clipboard.writeText(email).then(function() {
+                // Tampilkan notifikasi
+                const notification = document.getElementById('notification');
+                notification.style.display = 'block';
+                
+                // Sembunyikan notifikasi setelah 3 detik
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 3000);
+            }).catch(function(err) {
+                alert('Gagal menyalin email: ' + err);
+            });
+        }
+
+        // ===== ANIMASI SCROLL REVEAL =====
+        // Tambahkan efek fade-in saat scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observasi semua section
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'all 0.6s ease-out';
+                observer.observe(section);
+            });
+        });
+
+        // ===== SMOOTH SCROLLING =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

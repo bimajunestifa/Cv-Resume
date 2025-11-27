@@ -277,10 +277,12 @@
         .hero-image {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
             position: relative;
             animation: fadeInRight 1s ease;
+            margin-left: 150px;
+            padding-right: 50px;
         }
 
         .profile-photo-container {
@@ -578,6 +580,106 @@
             transform: translateY(-2px);
         }
 
+        /* ===== CERTIFICATES SECTION ===== */
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .certificate-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .certificate-item:hover {
+            transform: translateY(-10px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .certificate-item h3 {
+            color: #00d4ff;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .certificate-item .issuer {
+            color: #cbd5e0;
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .certificate-item .date {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: rgba(10, 14, 39, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 50px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .footer a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+        }
+
+        /* ===== BACK TO TOP BUTTON ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #00d4ff;
+            color: #0a0e27;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .back-to-top:hover {
+            background: #0099cc;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(0, 212, 255, 0.6);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
         /* ===== CONTACT SECTION ===== */
         .contact-grid {
             display: grid;
@@ -747,6 +849,7 @@
 
             .hero-image {
                 margin-top: 50px;
+                margin-left: 0;
             }
 
             .profile-photo-container {
@@ -809,10 +912,6 @@
     <!-- Navigation Bar -->
     <nav class="navbar" id="navbar">
         <a href="#home" class="logo">
-            <!-- Logo gambar - uncomment dan sesuaikan path jika ada file logo -->
-            <!-- <img src="img/logo.png" alt="Bima Junestifa Logo" class="logo-img"> -->
-            <!-- Atau gunakan foto profil sebagai logo -->
-            <img src="img/BimaPPD.jpg" alt="Bima Junestifa" class="logo-img" style="display: block;">
             <span class="logo-text">
                 <span class="logo-icon">💻</span>
                 <span class="first-name">Bima</span>
@@ -824,6 +923,7 @@
             <li><a href="#about">About Me</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="#skill">Skill</a></li>
+            <li><a href="#certificates">Certificates</a></li>
             <li><a href="#contact">Contact Me</a></li>
         </ul>
         <div class="mobile-menu-toggle" id="mobileMenuToggle">
@@ -834,7 +934,7 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1>Hi, It's <span class="highlight">Bima</span></h1>
+            <h1>Hi, It's <span class="highlight">Bima Junestifa</span></h1>
             <p class="subtitle">I'm a <span class="typing-text" id="typingText"></span></p>
             <p class="description">
                 I'm a Software Development student at SMK Wikrama 1 Garut who likes web development and technology. 
@@ -843,6 +943,7 @@
             <div class="hero-buttons">
                 <a href="#contact" class="btn btn-primary">Contact Me</a>
                 <a href="#portfolio" class="btn btn-secondary">View Portfolio</a>
+                <button class="btn btn-secondary" onclick="downloadCV()" style="margin-left: 0;">📄 Download CV</button>
             </div>
             <div class="social-icons">
                 <a href="https://github.com/bimajunestifa" target="_blank" title="GitHub">
@@ -1080,6 +1181,12 @@
                 </div>
                 <h3>Figma</h3>
             </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="devicon-flutter-plain colored"></i>
+                </div>
+                <h3>Flutter</h3>
+            </div>
         </div>
     </section>
 
@@ -1105,6 +1212,41 @@
                     </div>
         </div>
     </section>
+
+    <!-- Certificates Section -->
+    <section class="section" id="certificates">
+        <h2 class="section-title">Certificates</h2>
+        <div class="certificates-grid">
+            <div class="certificate-item">
+                <h3>Web Development Bootcamp</h3>
+                <p class="issuer">Dicoding Indonesia</p>
+                <p class="date">2024</p>
+                </div>
+            <div class="certificate-item">
+                <h3>HTML, CSS Tailwind, dan JavaScript</h3>
+                <p class="issuer">RevoU Coding Camp</p>
+                <p class="date">2025</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 <strong style="color: #00d4ff;">Bima Junestifa</strong>. All rights reserved.</p>
+            <p>Made with ❤️ using HTML, CSS & JavaScript</p>
+            <p>
+                <a href="https://github.com/bimajunestifa" target="_blank">GitHub</a> | 
+                <a href="https://www.linkedin.com/in/bima-junestifa-9723b433a/" target="_blank">LinkedIn</a> | 
+                <a href="mailto:bimajunestifa85@email.com">Email</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Modal Demo -->
     <div class="modal-overlay" id="demoModal">
@@ -1322,6 +1464,11 @@
             }
         });
 
+        // ===== FUNGSI DOWNLOAD CV =====
+        function downloadCV() {
+            window.print();
+        }
+
         // ===== FUNGSI SALIN EMAIL =====
         function copyEmail() {
             const email = "bimajunestifa85@email.com";
@@ -1333,6 +1480,24 @@
                 }, 3000);
             }).catch(function(err) {
                 alert('Gagal menyalin email: ' + err);
+            });
+        }
+
+        // ===== BACK TO TOP BUTTON =====
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         }
 

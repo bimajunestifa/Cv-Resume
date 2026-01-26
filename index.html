@@ -834,29 +834,86 @@
         }
 
         /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1024px) {
+            .navbar {
+                padding: 15px 30px;
+            }
+
+            .hero {
+                padding: 100px 30px 50px;
+            }
+
+            .section {
+                padding: 80px 30px;
+            }
+        }
+
         @media (max-width: 968px) {
             .hero {
                 flex-direction: column;
                 text-align: center;
-                padding: 100px 30px 50px;
+                padding: 100px 20px 50px;
             }
 
             .hero h1 {
                 font-size: 3em;
+                line-height: 1.1;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2em;
+            }
+
+            .hero .description {
+                font-size: 1em;
+                margin-bottom: 25px;
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 0.95em;
+                flex: 1;
+                min-width: 140px;
             }
 
             .hero-image {
-                margin-top: 50px;
+                margin-top: 40px;
                 margin-left: 0;
             }
 
             .profile-photo-container {
-                width: 300px;
-                height: 300px;
+                width: 280px;
+                height: 280px;
+            }
+
+            .profile-photo {
+                border: 4px solid #00d4ff;
+            }
+
+            .social-icons {
+                justify-content: center;
+            }
+
+            .social-icons a {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1em;
             }
 
             .about-content {
                 grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .about-text h3 {
+                margin-top: 0;
             }
 
             .nav-menu {
@@ -870,6 +927,11 @@
                 padding: 50px 30px;
                 transition: right 0.3s ease;
                 box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+                gap: 20px;
+            }
+
+            .nav-menu a {
+                padding: 10px 0;
             }
 
             .nav-menu.active {
@@ -883,25 +945,373 @@
 
         @media (max-width: 768px) {
             .navbar {
-                padding: 15px 20px;
+                padding: 12px 15px;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 1.2em;
+            }
+
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-icon {
+                font-size: 1.1em;
+            }
+
+            .hero {
+                padding: 80px 15px 30px;
             }
 
             .hero h1 {
-                font-size: 2.5em;
+                font-size: 2.2em;
+                margin-bottom: 15px;
+            }
+
+            .hero .subtitle {
+                font-size: 1em;
+                margin-bottom: 8px;
+            }
+
+            .hero .description {
+                font-size: 0.95em;
+                margin-bottom: 20px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 25px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+                width: 100%;
+            }
+
+            .profile-photo-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .social-icons {
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .social-icons a {
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
             }
 
             .section {
-                padding: 60px 20px;
+                padding: 50px 15px;
             }
 
             .section-title {
-                font-size: 2em;
+                font-size: 1.8em;
+                margin-bottom: 30px;
+            }
+
+            .section-title::after {
+                width: 80px;
             }
 
             .portfolio-grid,
             .skills-grid,
-            .contact-grid {
+            .contact-grid,
+            .certificates-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skill-item {
+                padding: 20px 15px;
+            }
+
+            .skill-icon {
+                font-size: 2.5em;
+                height: 60px;
+                margin-bottom: 10px;
+            }
+
+            .skill-item h3 {
+                font-size: 0.95em;
+            }
+
+            .portfolio-item {
+                border-radius: 15px;
+            }
+
+            .portfolio-image {
+                height: 180px;
+                font-size: 3em;
+            }
+
+            .portfolio-content {
+                padding: 20px;
+            }
+
+            .portfolio-content h3 {
+                font-size: 1.2em;
+            }
+
+            .portfolio-content p {
+                font-size: 0.9em;
+                margin-bottom: 15px;
+            }
+
+            .tech-tags {
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .tech-tag {
+                padding: 4px 12px;
+                font-size: 0.8em;
+            }
+
+            .portfolio-actions {
+                gap: 8px;
+            }
+
+            .btn-demo, .btn-github {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+
+            .contact-item {
+                padding: 20px;
+            }
+
+            .contact-item strong {
+                font-size: 1em;
+                margin-bottom: 8px;
+            }
+
+            .footer {
+                padding: 30px 15px;
+            }
+
+            .footer p {
+                font-size: 0.9em;
+                margin: 8px 0;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.2em;
+            }
+
+            .modal-content {
+                width: 95vw;
+                max-width: 100%;
+                max-height: 80vh;
+            }
+
+            .modal-body {
+                height: calc(80vh - 80px);
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 10px 12px;
+            }
+
+            .logo {
+                font-size: 1em;
+            }
+
+            .logo-text {
+                display: none;
+            }
+
+            .logo-img {
+                width: 35px;
+                height: 35px;
+                border: 2px solid #00d4ff;
+            }
+
+            .nav-menu {
+                width: 100%;
+                right: -100%;
+                top: 60px;
+            }
+
+            .hero {
+                padding: 70px 12px 25px;
+            }
+
+            .hero h1 {
+                font-size: 1.8em;
+                line-height: 1.2;
+            }
+
+            .hero .subtitle {
+                font-size: 0.95em;
+            }
+
+            .hero .description {
+                font-size: 0.9em;
+                line-height: 1.6;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.85em;
+                width: 100%;
+            }
+
+            .profile-photo-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .social-icons {
+                gap: 12px;
+            }
+
+            .social-icons a {
+                width: 38px;
+                height: 38px;
+                font-size: 0.9em;
+            }
+
+            .section {
+                padding: 40px 12px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+                margin-bottom: 25px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-item {
+                padding: 15px 12px;
+            }
+
+            .skill-icon {
+                font-size: 2em;
+                height: 50px;
+                margin-bottom: 8px;
+            }
+
+            .skill-item h3 {
+                font-size: 0.9em;
+            }
+
+            .portfolio-image {
+                height: 150px;
+                font-size: 2.5em;
+            }
+
+            .portfolio-content {
+                padding: 15px;
+            }
+
+            .portfolio-content h3 {
+                font-size: 1.1em;
+            }
+
+            .portfolio-content p {
+                font-size: 0.85em;
+            }
+
+            .tech-tag {
+                padding: 3px 10px;
+                font-size: 0.75em;
+            }
+
+            .about-text {
+                font-size: 1em;
+            }
+
+            .about-text p {
+                margin-bottom: 15px;
+            }
+
+            .contact-item {
+                padding: 15px;
+            }
+
+            .contact-item strong {
+                font-size: 0.95em;
+            }
+
+            .contact-item a {
+                font-size: 0.9em;
+            }
+
+            .footer {
+                padding: 25px 12px;
+            }
+
+            .footer p {
+                font-size: 0.85em;
+            }
+
+            .back-to-top {
+                bottom: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar {
+                padding: 8px 10px;
+            }
+
+            .hero {
+                padding: 60px 10px 20px;
+            }
+
+            .hero h1 {
+                font-size: 1.6em;
+            }
+
+            .btn {
+                padding: 9px 15px;
+                font-size: 0.8em;
+            }
+
+            .section {
+                padding: 35px 10px;
+            }
+
+            .section-title {
+                font-size: 1.3em;
             }
         }
     </style>
@@ -1315,7 +1725,8 @@
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const navMenu = document.getElementById('navMenu');
 
-        mobileMenuToggle.addEventListener('click', function() {
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
             navMenu.classList.toggle('active');
         });
 
@@ -1324,6 +1735,13 @@
             link.addEventListener('click', function() {
                 navMenu.classList.remove('active');
             });
+        });
+
+        // Tutup menu mobile saat klik di luar menu
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.navbar')) {
+                navMenu.classList.remove('active');
+            }
         });
 
         // ===== TYPING ANIMATION =====

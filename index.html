@@ -15,6 +15,9 @@
     <!-- DevIcons for Technology Logos -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <style>
         /* ===== RESET & BASE STYLES ===== */
         * {
@@ -35,12 +38,22 @@
             overflow-x: hidden;
         }
 
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
         /* ===== NAVIGATION BAR ===== */
         .navbar {
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(10, 14, 39, 0.95);
+            background: rgba(10, 14, 39, 0.85);
             backdrop-filter: blur(10px);
             padding: 20px 50px;
             display: flex;
@@ -49,11 +62,14 @@
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
         }
 
         .navbar.scrolled {
             padding: 15px 50px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.2);
+            background: rgba(10, 14, 39, 0.95);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
         }
 
         .logo {
@@ -65,6 +81,7 @@
             align-items: center;
             gap: 12px;
             transition: all 0.3s ease;
+            z-index: 2;
         }
 
         .logo:hover {
@@ -121,6 +138,7 @@
             display: flex;
             list-style: none;
             gap: 30px;
+            z-index: 2;
         }
 
         .nav-menu a {
@@ -157,6 +175,7 @@
             color: #ffffff;
             font-size: 1.5em;
             cursor: pointer;
+            z-index: 1001;
         }
 
         /* ===== HERO SECTION ===== */
@@ -168,6 +187,7 @@
             max-width: 1400px;
             margin: 0 auto;
             position: relative;
+            z-index: 2;
         }
 
         .hero-content {
@@ -181,11 +201,16 @@
             line-height: 1.2;
             margin-bottom: 20px;
             animation: fadeInUp 0.8s ease;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
         }
 
         .hero h1 .highlight {
             color: #00d4ff;
             position: relative;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero h1 .highlight::after {
@@ -213,6 +238,7 @@
             border-right: 3px solid #00d4ff;
             animation: blink 0.75s step-end infinite;
             padding-right: 5px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
         @keyframes blink {
@@ -250,17 +276,38 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
             color: #0a0e27;
             box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+            z-index: 1;
         }
 
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 30px rgba(0, 212, 255, 0.6);
+            box-shadow: 0 6px 40px rgba(0, 212, 255, 0.6);
         }
 
         .btn-secondary {
@@ -298,11 +345,13 @@
             box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
             transition: all 0.3s ease;
             cursor: pointer;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
         }
 
         .profile-photo:hover {
             transform: scale(1.05);
             box-shadow: 0 0 70px rgba(0, 212, 255, 0.7);
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.5));
         }
 
         .profile-photo img {
@@ -310,6 +359,27 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
+        }
+
+        .profile-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(0, 212, 255, 0.6);
+            }
         }
 
         .social-icons {
@@ -330,12 +400,15 @@
             font-size: 1.3em;
             transition: all 0.3s ease;
             text-decoration: none;
+            border: 1px solid rgba(0, 212, 255, 0.3);
         }
 
         .social-icons a:hover {
             background: #00d4ff;
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.1);
             box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+            color: #0a0e27;
+            border-color: #00d4ff;
         }
 
         @keyframes fadeInUp {
@@ -365,6 +438,8 @@
             padding: 100px 50px;
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .section-title {
@@ -372,10 +447,14 @@
             font-weight: 800;
             margin-bottom: 50px;
             text-align: center;
-            color: #00d4ff;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             position: relative;
             display: inline-block;
             width: 100%;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
         }
 
         .section-title::after {
@@ -388,6 +467,7 @@
             height: 4px;
             background: linear-gradient(90deg, #00d4ff, #f97316);
             border-radius: 2px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
         /* ===== ABOUT ME SECTION ===== */
@@ -408,6 +488,13 @@
             margin-bottom: 20px;
         }
 
+        .about-text h3 {
+            color: #00d4ff;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
         /* ===== SKILLS SECTION ===== */
         .skills-grid {
             display: grid;
@@ -418,19 +505,37 @@
 
         .skill-item {
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.2);
             border-radius: 15px;
             padding: 30px 20px;
             text-align: center;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            transition: all 0.3s ease;
+            opacity: 0;
         }
 
         .skill-item:hover {
             transform: translateY(-10px);
             border-color: #00d4ff;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.15);
+        }
+
+        .skill-item:hover::before {
+            opacity: 1;
         }
 
         .skill-icon {
@@ -441,6 +546,8 @@
             justify-content: center;
             height: 70px;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .skill-icon i {
@@ -453,19 +560,12 @@
             filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
         }
 
-        /* Override devicon colored untuk dark theme */
-        .skill-icon .colored {
-            opacity: 0.9;
-        }
-
-        .skill-item:hover .skill-icon .colored {
-            opacity: 1;
-        }
-
         .skill-item h3 {
             font-size: 1.1em;
             color: #ffffff;
             font-weight: 600;
+            position: relative;
+            z-index: 1;
         }
 
         /* ===== PORTFOLIO SECTION ===== */
@@ -481,14 +581,31 @@
             border-radius: 20px;
             overflow: hidden;
             transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.2);
             backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .portfolio-item:hover::before {
+            left: 100%;
         }
 
         .portfolio-item:hover {
             transform: translateY(-10px);
             border-color: #00d4ff;
-            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.4);
         }
 
         .portfolio-image {
@@ -511,12 +628,15 @@
 
         .portfolio-content {
             padding: 25px;
+            position: relative;
+            z-index: 2;
         }
 
         .portfolio-content h3 {
             font-size: 1.4em;
             margin-bottom: 10px;
             color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
         .portfolio-content p {
@@ -540,6 +660,12 @@
             font-size: 0.85em;
             font-weight: 500;
             border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
         }
 
         .portfolio-actions {
@@ -555,16 +681,20 @@
             text-align: center;
             text-decoration: none;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-demo {
             background: #00d4ff;
             color: #0a0e27;
+            font-weight: 600;
         }
 
         .btn-demo:hover {
             background: #0099cc;
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
         }
 
         .btn-github {
@@ -588,7 +718,7 @@
 
         .certificate-item {
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.2);
             border-radius: 15px;
             padding: 30px;
             transition: all 0.3s ease;
@@ -598,14 +728,15 @@
         .certificate-item:hover {
             transform: translateY(-10px);
             border-color: #00d4ff;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.15);
         }
 
         .certificate-item h3 {
             color: #00d4ff;
             font-size: 1.3em;
             margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
         .certificate-item .issuer {
@@ -622,10 +753,12 @@
         /* ===== FOOTER ===== */
         .footer {
             background: rgba(10, 14, 39, 0.8);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
             padding: 40px 50px;
             text-align: center;
             color: #94a3b8;
+            position: relative;
+            z-index: 2;
         }
 
         .footer-content {
@@ -645,6 +778,7 @@
 
         .footer a:hover {
             color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
 
         /* ===== BACK TO TOP BUTTON ===== */
@@ -654,7 +788,7 @@
             right: 30px;
             width: 50px;
             height: 50px;
-            background: #00d4ff;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
             color: #0a0e27;
             border: none;
             border-radius: 50%;
@@ -669,7 +803,7 @@
         }
 
         .back-to-top:hover {
-            background: #0099cc;
+            background: linear-gradient(135deg, #0099cc, #00d4ff);
             transform: translateY(-5px);
             box-shadow: 0 6px 30px rgba(0, 212, 255, 0.6);
         }
@@ -688,7 +822,7 @@
 
         .contact-item {
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.2);
             border-radius: 15px;
             padding: 30px;
             text-align: center;
@@ -698,7 +832,8 @@
         .contact-item:hover {
             transform: translateY(-5px);
             border-color: #00d4ff;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.15);
         }
 
         .contact-item strong {
@@ -706,6 +841,7 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
         .contact-item a {
@@ -912,10 +1048,6 @@
                 gap: 30px;
             }
 
-            .about-text h3 {
-                margin-top: 0;
-            }
-
             .nav-menu {
                 position: fixed;
                 top: 70px;
@@ -956,10 +1088,6 @@
             .logo-img {
                 width: 40px;
                 height: 40px;
-            }
-
-            .logo-icon {
-                font-size: 1.1em;
             }
 
             .hero {
@@ -1016,10 +1144,6 @@
             .section-title {
                 font-size: 1.8em;
                 margin-bottom: 30px;
-            }
-
-            .section-title::after {
-                width: 80px;
             }
 
             .portfolio-grid,
@@ -1149,7 +1273,6 @@
             .logo-img {
                 width: 35px;
                 height: 35px;
-                border: 2px solid #00d4ff;
             }
 
             .nav-menu {
@@ -1165,15 +1288,6 @@
             .hero h1 {
                 font-size: 1.8em;
                 line-height: 1.2;
-            }
-
-            .hero .subtitle {
-                font-size: 0.95em;
-            }
-
-            .hero .description {
-                font-size: 0.9em;
-                line-height: 1.6;
             }
 
             .hero-buttons {
@@ -1214,78 +1328,6 @@
             .skills-grid {
                 grid-template-columns: 1fr;
             }
-
-            .skill-item {
-                padding: 15px 12px;
-            }
-
-            .skill-icon {
-                font-size: 2em;
-                height: 50px;
-                margin-bottom: 8px;
-            }
-
-            .skill-item h3 {
-                font-size: 0.9em;
-            }
-
-            .portfolio-image {
-                height: 150px;
-                font-size: 2.5em;
-            }
-
-            .portfolio-content {
-                padding: 15px;
-            }
-
-            .portfolio-content h3 {
-                font-size: 1.1em;
-            }
-
-            .portfolio-content p {
-                font-size: 0.85em;
-            }
-
-            .tech-tag {
-                padding: 3px 10px;
-                font-size: 0.75em;
-            }
-
-            .about-text {
-                font-size: 1em;
-            }
-
-            .about-text p {
-                margin-bottom: 15px;
-            }
-
-            .contact-item {
-                padding: 15px;
-            }
-
-            .contact-item strong {
-                font-size: 0.95em;
-            }
-
-            .contact-item a {
-                font-size: 0.9em;
-            }
-
-            .footer {
-                padding: 25px 12px;
-            }
-
-            .footer p {
-                font-size: 0.85em;
-            }
-
-            .back-to-top {
-                bottom: 15px;
-                right: 15px;
-                width: 40px;
-                height: 40px;
-                font-size: 1em;
-            }
         }
 
         @media (max-width: 360px) {
@@ -1301,11 +1343,6 @@
                 font-size: 1.6em;
             }
 
-            .btn {
-                padding: 9px 15px;
-                font-size: 0.8em;
-            }
-
             .section {
                 padding: 35px 10px;
             }
@@ -1317,6 +1354,9 @@
     </style>
 </head>
 <body>
+    <!-- Three.js Canvas Container -->
+    <div id="canvas-container"></div>
+
     <!-- Navigation Bar -->
     <nav class="navbar" id="navbar">
         <a href="#home" class="logo">
@@ -1336,7 +1376,7 @@
         </ul>
         <div class="mobile-menu-toggle" id="mobileMenuToggle">
             <i class="fas fa-bars"></i>
-            </div>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -1366,9 +1406,10 @@
                 <a href="tel:+6282169667918" title="Phone">
                     <i class="fas fa-phone"></i>
                 </a>
-                </div>
             </div>
+        </div>
         <div class="hero-image">
+            <div class="profile-glow"></div>
             <div class="profile-photo-container">
                 <div class="profile-photo" id="profilePhoto">
                     <img src="img/BimaPPD.jpg" alt="Bima Junestifa">
@@ -1395,101 +1436,101 @@
                 <p>
                     Selalu antusias untuk belajar teknologi baru dan berkontribusi dalam proyek-proyek inovatif yang dapat memberikan 
                     dampak positif bagi pengguna.
-                        </p>
-                    </div>
+                </p>
+            </div>
             <div class="about-text">
-                <h3 style="color: #00d4ff; margin-bottom: 20px;">Pendidikan</h3>
+                <h3>Pendidikan</h3>
                 <p><strong>SMK Wikrama 1 Garut</strong><br>
                 Jurusan: Pengembangan Perangkat Lunak dan Gim (PPLG)<br>
                 Periode: 2024 - 2027</p>
                 <p style="margin-top: 20px;">
                     Fokus pembelajaran meliputi Pemrograman Web, Mobile Development, Database, dan Game Development.
-                        </p>
-                    </div>
-                </div>
+                </p>
+            </div>
+        </div>
     </section>
 
     <!-- Portfolio Section -->
     <section class="section" id="portfolio">
         <h2 class="section-title">My Project</h2>
-    <div class="portfolio-grid">
-        <div class="portfolio-item">
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
                 <div class="portfolio-image">
                     <span>📚</span>
                 </div>
                 <div class="portfolio-content">
-            <h3>Website Toko Buku</h3>
+                    <h3>Website Toko Buku</h3>
                     <p>Aplikasi web sederhana untuk menampilkan daftar buku dan detail informasi buku dengan fitur pencarian.</p>
-            <div class="tech-tags">
-                <span class="tech-tag">HTML</span>
-                <span class="tech-tag">CSS</span>
-                <span class="tech-tag">PHP</span>
-                <span class="tech-tag">MySQL</span>
+                    <div class="tech-tags">
+                        <span class="tech-tag">HTML</span>
+                        <span class="tech-tag">CSS</span>
+                        <span class="tech-tag">PHP</span>
+                        <span class="tech-tag">MySQL</span>
                     </div>
                     <div class="portfolio-actions">
                         <button class="btn-demo" onclick="openDemo('https://example.com/toko-buku')">Lihat Demo</button>
                         <a href="https://github.com/bimajunestifa" target="_blank" class="btn-github">GitHub</a>
                     </div>
+                </div>
             </div>
-        </div>
 
-        <div class="portfolio-item">
+            <div class="portfolio-item">
                 <div class="portfolio-image">
                     <span>📖</span>
                 </div>
                 <div class="portfolio-content">
-            <h3>Sistem Perpustakaan Sekolah</h3>
+                    <h3>Sistem Perpustakaan Sekolah</h3>
                     <p>Website untuk mengelola data buku, anggota, dan transaksi peminjaman dengan sistem CRUD lengkap.</p>
-            <div class="tech-tags">
-                <span class="tech-tag">PHP</span>
-                <span class="tech-tag">MySQL</span>
-                <span class="tech-tag">Bootstrap</span>
+                    <div class="tech-tags">
+                        <span class="tech-tag">PHP</span>
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">Bootstrap</span>
                     </div>
                     <div class="portfolio-actions">
                         <button class="btn-demo" onclick="openDemo('https://example.com/perpustakaan')">Lihat Demo</button>
                         <a href="https://github.com/bimajunestifa" target="_blank" class="btn-github">GitHub</a>
                     </div>
+                </div>
             </div>
-        </div>
 
-        <div class="portfolio-item">
+            <div class="portfolio-item">
                 <div class="portfolio-image">
                     <span>✅</span>
                 </div>
                 <div class="portfolio-content">
-            <h3>Aplikasi To-Do List</h3>
+                    <h3>Aplikasi To-Do List</h3>
                     <p>Aplikasi daftar tugas harian dengan fitur tambah, hapus, dan tandai tugas selesai menggunakan localStorage.</p>
-            <div class="tech-tags">
-                <span class="tech-tag">HTML</span>
-                <span class="tech-tag">CSS</span>
-                <span class="tech-tag">JavaScript</span>
+                    <div class="tech-tags">
+                        <span class="tech-tag">HTML</span>
+                        <span class="tech-tag">CSS</span>
+                        <span class="tech-tag">JavaScript</span>
                     </div>
                     <div class="portfolio-actions">
                         <button class="btn-demo" onclick="openDemo('https://example.com/todo-list')">Lihat Demo</button>
                         <a href="https://github.com/bimajunestifa" target="_blank" class="btn-github">GitHub</a>
                     </div>
+                </div>
             </div>
-        </div>
 
-        <div class="portfolio-item">
+            <div class="portfolio-item">
                 <div class="portfolio-image">
                     <span>🛒</span>
                 </div>
                 <div class="portfolio-content">
-            <h3>E-Commerce Sederhana</h3>
+                    <h3>E-Commerce Sederhana</h3>
                     <p>Website penjualan produk sederhana dengan fitur keranjang belanja dan sistem login pengguna.</p>
-            <div class="tech-tags">
-                <span class="tech-tag">HTML</span>
-                <span class="tech-tag">CSS</span>
-                <span class="tech-tag">JavaScript</span>
-                <span class="tech-tag">PHP</span>
-            </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">HTML</span>
+                        <span class="tech-tag">CSS</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">PHP</span>
+                    </div>
                     <div class="portfolio-actions">
                         <button class="btn-demo" onclick="openDemo('../nama-folder-ecommerce/index.html')">Lihat Demo</button>
                         <a href="https://github.com/bimajunestifa" target="_blank" class="btn-github">GitHub</a>
-        </div>
-    </div>
-</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="portfolio-item">
                 <div class="portfolio-image">
@@ -1503,7 +1544,7 @@
                         <span class="tech-tag">CSS</span>
                         <span class="tech-tag">JavaScript</span>
                         <span class="tech-tag">LocalStorage</span>
-                </div>
+                    </div>
                     <div class="portfolio-actions">
                         <button class="btn-demo" onclick="openDemo('../aplikasi-pencatatan-uang/index.html')">Lihat Demo</button>
                         <a href="https://github.com/bimajunestifa" target="_blank" class="btn-github">GitHub</a>
@@ -1601,23 +1642,23 @@
     <!-- Contact Section -->
     <section class="section" id="contact">
         <h2 class="section-title">Contact Me</h2>
-                <div class="contact-grid">
-                    <div class="contact-item">
-                        <strong>📧 Email</strong>
-                        <a href="mailto:bimajunestifa85@email.com">bimajunestifa85@email.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>📱 Telepon</strong>
-                        <a href="tel:+6282169667918">+62 82169667918</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>💻 GitHub</strong>
-                        <a href="https://github.com/bimajunestifa" target="_blank">github.com/bimajunestifa</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>🔗 LinkedIn</strong>
-                        <a href="https://www.linkedin.com/in/bima-junestifa-9723b433a/" target="_blank">linkedin.com/bima-junestifa</a>
-                    </div>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <strong>📧 Email</strong>
+                <a href="mailto:bimajunestifa85@email.com">bimajunestifa85@email.com</a>
+            </div>
+            <div class="contact-item">
+                <strong>📱 Telepon</strong>
+                <a href="tel:+6282169667918">+62 82169667918</a>
+            </div>
+            <div class="contact-item">
+                <strong>💻 GitHub</strong>
+                <a href="https://github.com/bimajunestifa" target="_blank">github.com/bimajunestifa</a>
+            </div>
+            <div class="contact-item">
+                <strong>🔗 LinkedIn</strong>
+                <a href="https://www.linkedin.com/in/bima-junestifa-9723b433a/" target="_blank">linkedin.com/bima-junestifa</a>
+            </div>
         </div>
     </section>
 
@@ -1629,7 +1670,7 @@
                 <h3>Web Development Bootcamp</h3>
                 <p class="issuer">Dicoding Indonesia</p>
                 <p class="date">2024</p>
-                </div>
+            </div>
             <div class="certificate-item">
                 <h3>HTML, CSS Tailwind, dan JavaScript</h3>
                 <p class="issuer">RevoU Coding Camp</p>
@@ -1642,7 +1683,7 @@
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2025 <strong style="color: #00d4ff;">Bima Junestifa</strong>. All rights reserved.</p>
-            <p>Made with ❤️ using HTML, CSS & JavaScript</p>
+            <p>Made with ❤️ using HTML, CSS, JavaScript & Three.js</p>
             <p>
                 <a href="https://github.com/bimajunestifa" target="_blank">GitHub</a> | 
                 <a href="https://www.linkedin.com/in/bima-junestifa-9723b433a/" target="_blank">LinkedIn</a> | 
@@ -1662,7 +1703,7 @@
             <div class="modal-header">
                 <h3 id="modalTitle">Demo Website</h3>
                 <button class="modal-close" onclick="closeDemo()">&times;</button>
-                </div>
+            </div>
             <div class="modal-body">
                 <iframe class="modal-iframe" id="demoIframe" src=""></iframe>
             </div>
@@ -1673,6 +1714,162 @@
     <div class="notification" id="notification">Email berhasil disalin!</div>
 
     <script>
+        // ===== THREE.JS BACKGROUND ANIMATION =====
+        let scene, camera, renderer, particles, particleGeometry, particleCount = 500;
+
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0e27);
+            
+            // Camera setup
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 100;
+            
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            
+            // Create particles
+            createParticles();
+            
+            // Create lines between particles
+            createConnectingLines();
+            
+            // Animation loop
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Add mouse interaction
+            document.addEventListener('mousemove', onMouseMove);
+        }
+
+        function createParticles() {
+            particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 400;
+                positions[i + 1] = (Math.random() - 0.5) * 400;
+                positions[i + 2] = (Math.random() - 0.5) * 400;
+                
+                velocities[i] = (Math.random() - 0.5) * 0.5;
+                velocities[i + 1] = (Math.random() - 0.5) * 0.5;
+                velocities[i + 2] = (Math.random() - 0.5) * 0.5;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.userData.velocities = velocities;
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x00d4ff,
+                size: 2,
+                sizeAttenuation: true,
+                transparent: true,
+                opacity: 0.8,
+                emissive: 0x00d4ff,
+            });
+            
+            particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+        }
+
+        function createConnectingLines() {
+            const lineGeometry = new THREE.BufferGeometry();
+            const positions = [];
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.2,
+            });
+            
+            const positionAttribute = particleGeometry.getAttribute('position');
+            
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positionAttribute.getX(i) - positionAttribute.getX(j);
+                    const dy = positionAttribute.getY(i) - positionAttribute.getY(j);
+                    const dz = positionAttribute.getZ(i) - positionAttribute.getZ(j);
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (distance < 80) {
+                        positions.push(
+                            positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i),
+                            positionAttribute.getX(j), positionAttribute.getY(j), positionAttribute.getZ(j)
+                        );
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+            scene.userData.lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(scene.userData.lines);
+        }
+
+        function onWindowResize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        let mouseX = 0, mouseY = 0;
+        function onMouseMove(event) {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Update particle positions
+            const positionAttribute = particleGeometry.getAttribute('position');
+            const velocities = particleGeometry.userData.velocities;
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                let x = positionAttribute.getX(i / 3);
+                let y = positionAttribute.getY(i / 3);
+                let z = positionAttribute.getZ(i / 3);
+                
+                x += velocities[i];
+                y += velocities[i + 1];
+                z += velocities[i + 2];
+                
+                // Bounce off walls
+                if (Math.abs(x) > 200) velocities[i] *= -1;
+                if (Math.abs(y) > 200) velocities[i + 1] *= -1;
+                if (Math.abs(z) > 200) velocities[i + 2] *= -1;
+                
+                positionAttribute.setXYZ(i / 3, x, y, z);
+            }
+            positionAttribute.needsUpdate = true;
+            
+            // Rotate particles based on mouse
+            particles.rotation.x += mouseY * 0.0002;
+            particles.rotation.y += mouseX * 0.0002;
+            
+            // Animate lines opacity
+            if (scene.userData.lines) {
+                scene.userData.lines.material.opacity = 0.2 + Math.sin(Date.now() * 0.001) * 0.1;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        // Initialize Three.js on page load
+        window.addEventListener('load', initThreeJS);
+
         // ===== NAVBAR SCROLL EFFECT =====
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -1730,14 +1927,12 @@
             navMenu.classList.toggle('active');
         });
 
-        // Tutup menu mobile saat klik link
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
                 navMenu.classList.remove('active');
             });
         });
 
-        // Tutup menu mobile saat klik di luar menu
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.navbar')) {
                 navMenu.classList.remove('active');
@@ -1759,32 +1954,29 @@
                 if (isDeleting) {
                     typingElement.textContent = currentText.substring(0, charIndex - 1);
                     charIndex--;
-                    typingSpeed = 50; // Lebih cepat saat menghapus
+                    typingSpeed = 50;
                 } else {
                     typingElement.textContent = currentText.substring(0, charIndex + 1);
                     charIndex++;
-                    typingSpeed = 100; // Normal speed saat mengetik
+                    typingSpeed = 100;
                 }
 
                 if (!isDeleting && charIndex === currentText.length) {
-                    // Tunggu sebentar sebelum mulai menghapus
                     typingSpeed = 2000;
                     isDeleting = true;
                 } else if (isDeleting && charIndex === 0) {
-                    // Pindah ke text berikutnya
                     isDeleting = false;
                     textIndex = (textIndex + 1) % texts.length;
-                    typingSpeed = 500; // Delay sebelum mulai mengetik lagi
+                    typingSpeed = 500;
                 }
 
                 setTimeout(typeText, typingSpeed);
             }
 
-            // Mulai typing animation
             typeText();
         });
 
-        // ===== FUNGSI UPLOAD FOTO PROFIL =====
+        // ===== PROFILE PHOTO UPLOAD =====
         document.addEventListener('DOMContentLoaded', function() {
             const profilePhoto = document.getElementById('profilePhoto');
             
@@ -1809,12 +2001,6 @@
                         const existingImg = profilePhoto.querySelector('img');
                         if (existingImg) {
                             existingImg.src = e.target.result;
-                        } else {
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.alt = 'Bima Junestifa';
-                            profilePhoto.innerHTML = '';
-                            profilePhoto.appendChild(img);
                         }
                     };
                     reader.readAsDataURL(file);
@@ -1822,7 +2008,7 @@
             });
         });
 
-        // ===== FUNGSI MODAL DEMO =====
+        // ===== MODAL DEMO =====
         function openDemo(url) {
             const modal = document.getElementById('demoModal');
             const iframe = document.getElementById('demoIframe');
@@ -1832,31 +2018,24 @@
                 'https://example.com/toko-buku',
                 'https://example.com/perpustakaan',
                 'https://example.com/todo-list',
-                'https://example.com/ecommerce',
-                '../nama-folder-ecommerce/index.html'
+                'https://example.com/ecommerce'
             ];
             
             if (url && !exampleUrls.includes(url)) {
-                if (url.startsWith('../') || url.startsWith('./') || !url.startsWith('http')) {
-                    iframe.src = url;
-                } else {
-                    iframe.src = url;
-                }
-                modalTitle.textContent = 'Demo Website';
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+                iframe.src = url;
             } else {
-                const userUrl = prompt('Masukkan URL atau path lokal project Anda:\n\nContoh path lokal: ../nama-folder/index.html\nContoh URL online: https://your-website.com\n\nAtau klik Cancel untuk membuka GitHub');
-                
+                const userUrl = prompt('Masukkan URL atau path lokal project Anda:');
                 if (userUrl && userUrl.trim() !== '') {
                     iframe.src = userUrl.trim();
-                    modalTitle.textContent = 'Demo Website';
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
                 } else if (userUrl === null) {
                     window.open('https://github.com/bimajunestifa', '_blank');
+                    return;
                 }
             }
+            
+            modalTitle.textContent = 'Demo Website';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeDemo() {
@@ -1880,23 +2059,9 @@
             }
         });
 
-        // ===== FUNGSI DOWNLOAD CV =====
+        // ===== DOWNLOAD CV =====
         function downloadCV() {
             window.print();
-        }
-
-        // ===== FUNGSI SALIN EMAIL =====
-        function copyEmail() {
-            const email = "bimajunestifa85@email.com";
-            navigator.clipboard.writeText(email).then(function() {
-                const notification = document.getElementById('notification');
-                notification.style.display = 'block';
-                setTimeout(function() {
-                    notification.style.display = 'none';
-                }, 3000);
-            }).catch(function(err) {
-                alert('Gagal menyalin email: ' + err);
-            });
         }
 
         // ===== BACK TO TOP BUTTON =====

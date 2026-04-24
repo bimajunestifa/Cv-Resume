@@ -107,11 +107,11 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.46;
+            opacity: 0.62;
         }
 
         body.theme-dark .bg-canvas {
-            opacity: 0.32;
+            opacity: 0.54;
         }
 
         .talk-pill {
@@ -298,6 +298,81 @@
             margin-top: 22px;
             display: flex;
             justify-content: center;
+        }
+
+        .scroll-side-item {
+            opacity: 0;
+            filter: blur(6px);
+            transform: translate3d(var(--slide-offset, -54px), 0, 0);
+            transition:
+                opacity 0.72s ease,
+                transform 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.72s ease;
+        }
+
+        .scroll-side-item.from-right {
+            --slide-offset: 54px;
+        }
+
+        .reveal.is-visible .scroll-side-item {
+            opacity: 1;
+            filter: blur(0);
+            transform: translate3d(0, 0, 0);
+        }
+
+        .reveal.is-visible .delay-1 {
+            transition-delay: 0.08s;
+        }
+
+        .reveal.is-visible .delay-2 {
+            transition-delay: 0.22s;
+        }
+
+        .reveal.is-visible .delay-3 {
+            transition-delay: 0.36s;
+        }
+
+        .reveal.is-visible .delay-4 {
+            transition-delay: 0.5s;
+        }
+
+        .scroll-letter-title {
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0 0.16em;
+        }
+
+        .scroll-letter-word {
+            display: inline-flex;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scroll-letter-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translate3d(-0.9em, 0, 0);
+            filter: blur(6px);
+            will-change: transform, opacity, filter;
+        }
+
+        .scroll-letter-title.play-reveal .scroll-letter-char {
+            animation: scrollLetterIn 0.82s cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation-delay: var(--char-delay, 0s);
+        }
+
+        @keyframes scrollLetterIn {
+            0% {
+                opacity: 0;
+                transform: translate3d(-0.9em, 0, 0);
+                filter: blur(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+                filter: blur(0);
+            }
         }
 
         .section {
@@ -1348,7 +1423,7 @@
 
         <section class="spotlight-section reveal" id="coding">
             <div class="spotlight-inner">
-                <h2 class="spotlight-title">Coding Lifetime</h2>
+                <h2 class="spotlight-title scroll-letter-title" data-scroll-letter="Coding Lifetime">Coding Lifetime</h2>
                 <div class="spotlight-meta">
                     <span>Project based learning journey</span>
                     <span><strong>Since 2024</strong></span>
@@ -1361,26 +1436,26 @@
 
         <section class="spotlight-section reveal" id="github-profile">
             <div class="spotlight-inner">
-                <h2 class="spotlight-title">Follow My GitHub</h2>
+                <h2 class="spotlight-title scroll-letter-title" data-scroll-letter="Follow My GitHub">Follow My GitHub</h2>
                 <div class="spotlight-meta">
-                    <span><strong>bimajunestifa</strong> repositories and coding journey</span>
-                    <span>Public profile ready to explore</span>
+                    <span class="scroll-side-item delay-2"><strong>bimajunestifa</strong> repositories and coding journey</span>
+                    <span class="scroll-side-item delay-3">Public profile ready to explore</span>
                 </div>
                 <div class="spotlight-actions">
-                    <a class="cta-button" href="https://github.com/bimajunestifa" target="_blank" rel="noreferrer">Visit GitHub Profile</a>
+                    <a class="cta-button scroll-side-item delay-4" href="https://github.com/bimajunestifa" target="_blank" rel="noreferrer">Visit GitHub Profile</a>
                 </div>
             </div>
         </section>
 
         <section class="spotlight-section reveal" id="instagram-highlight">
             <div class="spotlight-inner">
-                <h2 class="spotlight-title">Follow My Instagram</h2>
+                <h2 class="spotlight-title scroll-letter-title" data-scroll-letter="Follow My Instagram">Follow My Instagram</h2>
                 <div class="spotlight-meta">
-                    <span><strong>@bima_junestifa17</strong></span>
-                    <span>See my profile and connect with me on Instagram</span>
+                    <span class="scroll-side-item delay-2"><strong>@bima_junestifa17</strong></span>
+                    <span class="scroll-side-item delay-3">See my profile and connect with me on Instagram</span>
                 </div>
                 <div class="spotlight-actions">
-                    <a class="cta-button" href="https://www.instagram.com/bima_junestifa17/" target="_blank" rel="noreferrer">Visit Instagram Profile</a>
+                    <a class="cta-button scroll-side-item delay-4" href="https://www.instagram.com/bima_junestifa17/" target="_blank" rel="noreferrer">Visit Instagram Profile</a>
                 </div>
             </div>
         </section>
@@ -1790,13 +1865,58 @@
             });
         });
 
+        document.querySelectorAll("[data-scroll-letter]").forEach((title) => {
+            const fullText = title.dataset.scrollLetter || title.textContent.trim();
+            const words = fullText.split(/\s+/);
+            title.setAttribute("aria-label", fullText);
+            title.textContent = "";
+
+            let charIndex = 0;
+            words.forEach((word) => {
+                const wordSpan = document.createElement("span");
+                wordSpan.className = "scroll-letter-word";
+
+                [...word].forEach((char) => {
+                    const charSpan = document.createElement("span");
+                    charSpan.className = "scroll-letter-char";
+                    charSpan.textContent = char;
+                    charSpan.style.setProperty("--char-delay", `${charIndex * 0.07}s`);
+                    wordSpan.appendChild(charSpan);
+                    charIndex += 1;
+                });
+
+                title.appendChild(wordSpan);
+            });
+        });
+
+        function playScrollLetterReveal(scope) {
+            scope.querySelectorAll("[data-scroll-letter]").forEach((title) => {
+                title.classList.remove("play-reveal");
+                void title.offsetWidth;
+                title.classList.add("play-reveal");
+            });
+        }
+
+        function resetScrollLetterReveal(scope) {
+            scope.querySelectorAll("[data-scroll-letter]").forEach((title) => {
+                title.classList.remove("play-reveal");
+            });
+        }
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add("is-visible");
+                    playScrollLetterReveal(entry.target);
+                } else {
+                    entry.target.classList.remove("is-visible");
+                    resetScrollLetterReveal(entry.target);
                 }
             });
-        }, { threshold: 0.12 });
+        }, {
+            threshold: 0.28,
+            rootMargin: "0px 0px -12% 0px"
+        });
 
         document.querySelectorAll(".reveal").forEach((element) => {
             observer.observe(element);
@@ -1823,51 +1943,51 @@
             }
 
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-            camera.position.z = 180;
+            const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 220;
 
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
             renderer.setSize(window.innerWidth, window.innerHeight);
             bgCanvas.appendChild(renderer.domElement);
 
-            const particleCount = 140;
-            const positions = new Float32Array(particleCount * 3);
-            const velocities = [];
-            for (let i = 0; i < particleCount; i += 1) {
-                const i3 = i * 3;
-                positions[i3] = (Math.random() - 0.5) * 320;
-                positions[i3 + 1] = (Math.random() - 0.5) * 220;
-                positions[i3 + 2] = (Math.random() - 0.5) * 120;
-                velocities.push({
-                    x: (Math.random() - 0.5) * 0.18,
-                    y: (Math.random() - 0.5) * 0.16
+            const lineGroup = new THREE.Group();
+            const lineLayers = [];
+            const lineCount = 18;
+            const segmentCount = 42;
+            const span = 440;
+            const height = 250;
+
+            for (let i = 0; i < lineCount; i += 1) {
+                const positions = new Float32Array(segmentCount * 3);
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+                const material = new THREE.LineBasicMaterial({
+                    transparent: true,
+                    opacity: 0.18 + (i % 4) * 0.03
+                });
+
+                const line = new THREE.Line(geometry, material);
+                line.position.z = -80 + i * 5;
+                lineGroup.add(line);
+
+                lineLayers.push({
+                    line,
+                    geometry,
+                    material,
+                    baseY: -height / 2 + (height / (lineCount - 1)) * i,
+                    amplitude: 8 + Math.random() * 20,
+                    secondaryAmplitude: 4 + Math.random() * 10,
+                    frequency: 1.6 + Math.random() * 1.4,
+                    secondaryFrequency: 2.8 + Math.random() * 2.1,
+                    speed: 0.18 + Math.random() * 0.24,
+                    offset: Math.random() * Math.PI * 2,
+                    drift: 4 + Math.random() * 9
                 });
             }
 
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-            const pointsMaterial = new THREE.PointsMaterial({
-                size: 2.3,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            const points = new THREE.Points(geometry, pointsMaterial);
-            scene.add(points);
-
-            const lineMaterial = new THREE.LineBasicMaterial({
-                transparent: true,
-                opacity: 0.16
-            });
-
-            const lineGeometry = new THREE.BufferGeometry();
-            const maxConnections = particleCount * 8;
-            const linePositions = new Float32Array(maxConnections * 3 * 2);
-            lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
-            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-            scene.add(lines);
+            scene.add(lineGroup);
 
             const mouse = { x: 0, y: 0 };
             document.addEventListener("pointermove", (event) => {
@@ -1877,63 +1997,44 @@
 
             function updateThemeColors() {
                 const dark = body.classList.contains("theme-dark");
-                pointsMaterial.color.set(dark ? 0x7ea9ff : 0x7d8faa);
-                lineMaterial.color.set(dark ? 0x4f87ee : 0xb6c5dd);
+                const primary = dark ? 0x5b8cff : 0x9fb8db;
+                const secondary = dark ? 0x8aa8ff : 0xc7d7ec;
+                lineLayers.forEach((layer, index) => {
+                    layer.material.color.set(index % 3 === 0 ? secondary : primary);
+                });
                 renderer.setClearColor(0x000000, 0);
             }
 
             updateThemeColors();
             window.addEventListener("themechange", updateThemeColors);
 
-            function updateLines() {
-                const pos = geometry.attributes.position.array;
-                let ptr = 0;
-                for (let i = 0; i < particleCount; i += 1) {
-                    const ax = pos[i * 3];
-                    const ay = pos[i * 3 + 1];
-                    for (let j = i + 1; j < particleCount; j += 1) {
-                        const bx = pos[j * 3];
-                        const by = pos[j * 3 + 1];
-                        const dx = ax - bx;
-                        const dy = ay - by;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 42 && ptr < linePositions.length - 6) {
-                            linePositions[ptr++] = ax;
-                            linePositions[ptr++] = ay;
-                            linePositions[ptr++] = 0;
-                            linePositions[ptr++] = bx;
-                            linePositions[ptr++] = by;
-                            linePositions[ptr++] = 0;
-                        }
-                    }
-                }
-                lineGeometry.setDrawRange(0, ptr / 3);
-                lineGeometry.attributes.position.needsUpdate = true;
-            }
-
             function animate() {
                 requestAnimationFrame(animate);
-                const pos = geometry.attributes.position.array;
+                const time = performance.now() * 0.00028;
 
-                for (let i = 0; i < particleCount; i += 1) {
-                    const i3 = i * 3;
-                    pos[i3] += velocities[i].x;
-                    pos[i3 + 1] += velocities[i].y;
+                lineLayers.forEach((layer, index) => {
+                    const pos = layer.geometry.attributes.position.array;
+                    const verticalShift = Math.sin(time * layer.speed + layer.offset) * layer.drift;
 
-                    if (pos[i3] > 160 || pos[i3] < -160) {
-                        velocities[i].x *= -1;
+                    for (let segment = 0; segment < segmentCount; segment += 1) {
+                        const progress = segment / (segmentCount - 1);
+                        const x = (progress - 0.5) * span;
+                        const waveA = Math.sin(progress * Math.PI * 2 * layer.frequency + time * (1.8 + layer.speed) + layer.offset) * layer.amplitude;
+                        const waveB = Math.cos(progress * Math.PI * 2 * layer.secondaryFrequency - time * (1.1 + layer.speed) + layer.offset) * layer.secondaryAmplitude;
+                        const i3 = segment * 3;
+
+                        pos[i3] = x;
+                        pos[i3 + 1] = layer.baseY + verticalShift + waveA + waveB;
+                        pos[i3 + 2] = Math.sin(progress * Math.PI * 4 + time + index * 0.22) * 8;
                     }
-                    if (pos[i3 + 1] > 110 || pos[i3 + 1] < -110) {
-                        velocities[i].y *= -1;
-                    }
-                }
 
-                geometry.attributes.position.needsUpdate = true;
-                points.rotation.y += 0.0008;
-                points.rotation.x += 0.0003;
-                scene.rotation.x += (mouse.y * 0.08 - scene.rotation.x) * 0.03;
-                scene.rotation.y += (mouse.x * 0.08 - scene.rotation.y) * 0.03;
-                updateLines();
+                    layer.geometry.attributes.position.needsUpdate = true;
+                });
+
+                lineGroup.rotation.x += ((mouse.y * 0.12) - lineGroup.rotation.x) * 0.025;
+                lineGroup.rotation.y += ((mouse.x * 0.16) - lineGroup.rotation.y) * 0.025;
+                lineGroup.position.x += ((mouse.x * 14) - lineGroup.position.x) * 0.03;
+                lineGroup.position.y += ((mouse.y * 10) - lineGroup.position.y) * 0.03;
                 renderer.render(scene, camera);
             }
 

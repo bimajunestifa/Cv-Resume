@@ -114,11 +114,18 @@
             opacity: 0.54;
         }
 
-        .talk-pill {
+        .top-actions {
             position: fixed;
             top: 18px;
             right: 18px;
             z-index: 40;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .talk-pill,
+        .lang-pill {
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -127,6 +134,15 @@
             background: #181818;
             color: #ffffff;
             box-shadow: 0 18px 34px rgba(0, 0, 0, 0.15);
+        }
+
+        .lang-pill {
+            padding: 14px 16px;
+            min-width: 62px;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 800;
+            letter-spacing: 0.08em;
         }
 
         .hero,
@@ -1631,10 +1647,19 @@
         }
 
         @media (max-width: 760px) {
-            .talk-pill {
+            .top-actions {
                 top: 14px;
                 right: 14px;
+                gap: 10px;
+            }
+
+            .talk-pill {
                 padding: 12px 16px;
+            }
+
+            .lang-pill {
+                min-width: 54px;
+                padding: 12px 14px;
             }
 
             .hero,
@@ -1742,7 +1767,10 @@
 <body>
     <div class="bg-canvas" id="bgCanvas"></div>
     <div class="page">
-        <a class="talk-pill" href="#about"><i class="far fa-message"></i> Let's Talk</a>
+        <div class="top-actions">
+            <button class="lang-pill" id="langToggle" type="button" aria-label="Switch to Indonesian">ID</button>
+            <a class="talk-pill" id="talkPill" href="#about"><i class="far fa-message"></i> Let's Talk</a>
+        </div>
 
         <section class="hero reveal" id="home">
             <div class="hero-inner">
@@ -2202,8 +2230,11 @@
         const body = document.body;
         const resumeButton = document.getElementById("resumeButton");
         const themeToggle = document.getElementById("themeToggle");
+        const langToggle = document.getElementById("langToggle");
+        const talkPill = document.getElementById("talkPill");
         const notification = document.getElementById("notification");
         const sectionLinks = document.querySelectorAll("[data-section-link]");
+        const dockLinks = [...sectionLinks];
         const sections = [...document.querySelectorAll("section[id]")];
         const githubContributionImage = document.getElementById("githubContributionImage");
         const bgCanvas = document.getElementById("bgCanvas");
@@ -2214,6 +2245,38 @@
         const aiForm = document.getElementById("aiForm");
         const aiInput = document.getElementById("aiInput");
         const aiStatus = document.getElementById("aiStatus");
+        const heroTitleLines = document.querySelectorAll(".hero-line");
+        const heroSubtitle = document.querySelector(".hero-subtitle");
+        const heroMetricItems = document.querySelectorAll(".hero-metrics span");
+        const heroMiniLinkItems = document.querySelectorAll(".hero-mini-links a");
+        const spotlightTitleItems = document.querySelectorAll(".spotlight-title");
+        const spotlightMetaItems = document.querySelectorAll(".spotlight-meta");
+        const spotlightActionItems = document.querySelectorAll(".spotlight-actions .cta-button");
+        const projectsKicker = document.querySelector("#projects .section-kicker");
+        const projectsTitle = document.querySelector(".projects-header h2");
+        const projectsCopy = document.querySelector(".projects-header p");
+        const projectStatLabels = document.querySelectorAll(".projects-stats .info-card span");
+        const projectCards = document.querySelectorAll(".project-card");
+        const projectPreviewButtons = document.querySelectorAll(".project-link-row .cta-button");
+        const aboutTitle = document.querySelector(".about-copy-header h2");
+        const aboutSubtitle = document.querySelector(".about-copy-header span");
+        const aboutHello = document.querySelector(".about-copy h3");
+        const aboutParagraphs = document.querySelectorAll(".about-copy p");
+        const techHeaderTitle = document.querySelector(".tech-header h2");
+        const techHeaderCopy = document.querySelector(".tech-header p");
+        const techLabels = document.querySelectorAll(".tech-label");
+        const certKicker = document.querySelector("#certification .section-kicker");
+        const certTopTitle = document.querySelector(".cert-top h2");
+        const certTopCopy = document.querySelector(".cert-top p");
+        const certSummaryLabels = document.querySelectorAll(".cert-summary span");
+        const certCards = document.querySelectorAll(".cert-card");
+        const certViewButtons = document.querySelectorAll(".cert-view .cert-button");
+        const contribTitle = document.querySelector(".contrib-heading h2");
+        const contribLink = document.querySelector(".contrib-heading a");
+        const contribCopy = document.querySelector(".contrib-heading p");
+        const contribStatLabels = document.querySelectorAll(".contrib-box small");
+        const contribLegend = document.querySelector(".contrib-legend span");
+        const footerCopy = document.querySelector(".footer p");
 
         function showNotification(message) {
             notification.textContent = message;
@@ -2260,6 +2323,364 @@
             aiStatus.textContent = message;
         }
 
+        function setNodeText(node, text) {
+            if (node) {
+                node.textContent = text;
+            }
+        }
+
+        function setNodeHTML(node, html) {
+            if (node) {
+                node.innerHTML = html;
+            }
+        }
+
+        function renderScrollLetterTitle(title, text) {
+            if (!title) {
+                return;
+            }
+
+            const fullText = (text || "").trim();
+            const words = fullText.split(/\s+/);
+            title.setAttribute("aria-label", fullText);
+            title.dataset.scrollLetter = fullText;
+            title.textContent = "";
+
+            let charIndex = 0;
+            words.forEach((word) => {
+                const wordSpan = document.createElement("span");
+                wordSpan.className = "scroll-letter-word";
+
+                [...word].forEach((char) => {
+                    const charSpan = document.createElement("span");
+                    charSpan.className = "scroll-letter-char";
+                    charSpan.textContent = char;
+                    charSpan.style.setProperty("--char-delay", `${charIndex * 0.07}s`);
+                    wordSpan.appendChild(charSpan);
+                    charIndex += 1;
+                });
+
+                title.appendChild(wordSpan);
+            });
+        }
+
+        const translations = {
+            en: {
+                langButton: "ID",
+                langButtonAria: "Ubah ke Bahasa Indonesia",
+                talkPill: "Let's Talk",
+                talkPillAria: "Jump to about section",
+                heroLineTwo: "IAM BIMA",
+                heroSubtitle: `Pelajar SMK Wikrama 1 Garut <span>with a strong interest in web development and practical projects.</span>`,
+                heroMetrics: [
+                    `<strong>5+</strong> Projects Completed`,
+                    `<strong>1</strong> Active GitHub Profile`,
+                    `<strong>1</strong> Professional LinkedIn`
+                ],
+                resume: "Resume",
+                heroLinks: ["Scroll Down", "GitHub", "LinkedIn"],
+                spotlightTitles: ["Coding Lifetime", "Follow My GitHub", "Follow My Instagram"],
+                spotlightMeta: [
+                    ["Project based learning journey", "<strong>Since 2024</strong>"],
+                    ["<strong>bimajunestifa</strong> repositories and coding journey", "Public profile ready to explore"],
+                    ["<strong>@bima_junestifa17</strong>", "See my profile and connect with me on Instagram"]
+                ],
+                spotlightButtons: ["Visit GitHub Profile", "Visit GitHub Profile", "Visit Instagram Profile"],
+                projects: {
+                    kicker: "Projects",
+                    title: "Recent Projects",
+                    copy: "A curated selection of my latest work, focusing on web development practice, cleaner interfaces, and useful user flows.",
+                    stats: ["TOTAL BUILT", "STUDY CASES", "LIVE PROFILE"],
+                    descriptions: [
+                        "A web app for displaying book data, browsing a catalog, and making information easier to find with a simple search flow.",
+                        "A school library management system with books, members, and borrowing transactions using CRUD based logic.",
+                        "A simple productivity app with add, delete, and complete task interactions using localStorage for persistence.",
+                        "A simple e-commerce website project with product browsing, shopping flow, and a cleaner storefront interface.",
+                        "A cafe website project focused on menu presentation, cleaner branding, and a user friendly layout for a modern food business."
+                    ],
+                    preview: "Preview"
+                },
+                about: {
+                    title: "About Me",
+                    subtitle: "Introduction about myself in web development",
+                    hello: `Hello World <span class="wave-hand" aria-hidden="true">&#128075;</span>`,
+                    paragraphs: [
+                        `Hi, I'm <strong>Bima Junestifa</strong>, a student at <strong>SMK Wikrama 1 Garut</strong> who enjoys learning through real project practice, interface building, and consistent design improvement.`,
+                        "A Software Engineering student with hands-on coding experience through school assignments and personal projects. Passionate about solving problems and turning ideas into simple, useful digital solutions.",
+                        "Worked on projects like book catalog websites, school systems, to-do apps, and money tracker tools. Each one helped me improve logic, layout, and confidence in building with code.",
+                        "Excited about the power of AI and modern tools to accelerate development. This journey keeps sharpening my skills and strengthening my love for technology."
+                    ]
+                },
+                skills: {
+                    title: "Tech Stack &#128640;",
+                    copy: "My current development stack for web projects, interface work, and AI-assisted workflow. I cleaned this area so the tools stay readable in both light and dark mode.",
+                    labels: [
+                        `<i class="fas fa-language"></i> Language`,
+                        `<i class="fas fa-layer-group"></i> Frontend`,
+                        `<i class="fas fa-database"></i> Backend`,
+                        `<i class="fas fa-robot"></i> AI &amp; Tools`
+                    ]
+                },
+                certifications: {
+                    kicker: "Achievements",
+                    title: "Certifications &amp; <span>Awards</span>",
+                    copy: "A showcase of professional growth and academic practice through certifications and achievements. Certificate links are ready for you to replace later.",
+                    summary: ["TOTAL", "ACADEMIC", "READY SLOT"],
+                    view: "View",
+                    cardTitles: [
+                        "Sertifikat Dicoding Git &amp; GitHub",
+                        "RevoU HTML, CSS, Tailwind, and JavaScript",
+                        "Additional Certificate Slot"
+                    ],
+                    cardDescriptions: [
+                        "Link sertifikat Dicoding untuk materi Git dan GitHub sudah terpasang pada kartu ini.",
+                        "Link sertifikat RevoU sudah aktif pada kartu ini dan siap dibuka langsung dari halaman portfolio.",
+                        "This third card is reserved for the next certificate you want to add to the page later."
+                    ],
+                    badges: ["ACADEMIC", "ACADEMIC", "READY"],
+                    next: "NEXT"
+                },
+                contributions: {
+                    title: "Contributions",
+                    link: "Visit on Github",
+                    copy: "This section now uses public data from your GitHub profile page. Fetched from <code>github.com/bimajunestifa</code> on April 24, 2026.",
+                    stats: ["Followers", "Following", "Repositories"],
+                    legend: "Public GitHub graph from your profile README output"
+                },
+                footer: "&copy; 2026 Made by Bima Junestifa | All rights reserved.",
+                dockLabels: ["Home", "Coding", "Projects", "About", "Tech Stack"],
+                themeToggle: "Toggle Theme",
+                ai: {
+                    buttonAria: "Open Bimkidz AI assistant",
+                    panelAria: "Bimkidz AI assistant",
+                    title: "Bimkidz AI",
+                    subtitle: "Portfolio helper powered by AI",
+                    intro: "Hello, I'm Bimkidz AI. You can ask about Bima's projects, skills, certificates, or profile from this website.",
+                    ready: "Bimkidz AI is ready after the API key is connected.",
+                    placeholder: "Ask anything about this portfolio...",
+                    thinking: "Bimkidz AI is thinking...",
+                    errorMessage: "Bimkidz AI is not fully active yet. Make sure the OpenAI API key is connected on the server.",
+                    errorStatus: "Failed to reach Bimkidz AI.",
+                    closeAria: "Close AI panel"
+                }
+            },
+            id: {
+                langButton: "EN",
+                langButtonAria: "Switch to English",
+                talkPill: "Mari Bicara",
+                talkPillAria: "Buka bagian tentang saya",
+                heroLineTwo: "SAYA BIMA",
+                heroSubtitle: `Pelajar SMK Wikrama 1 Garut <span>dengan minat kuat pada pengembangan web dan proyek-proyek praktis.</span>`,
+                heroMetrics: [
+                    `<strong>5+</strong> Proyek Selesai`,
+                    `<strong>1</strong> Profil GitHub Aktif`,
+                    `<strong>1</strong> LinkedIn Profesional`
+                ],
+                resume: "CV",
+                heroLinks: ["Gulir ke Bawah", "GitHub", "LinkedIn"],
+                spotlightTitles: ["Perjalanan Coding", "Ikuti GitHub Saya", "Ikuti Instagram Saya"],
+                spotlightMeta: [
+                    ["Perjalanan belajar berbasis proyek", "<strong>Sejak 2024</strong>"],
+                    ["<strong>bimajunestifa</strong> repositori dan perjalanan coding", "Profil publik siap dijelajahi"],
+                    ["<strong>@bima_junestifa17</strong>", "Lihat profil saya dan terhubung dengan saya di Instagram"]
+                ],
+                spotlightButtons: ["Kunjungi Profil GitHub", "Kunjungi Profil GitHub", "Kunjungi Profil Instagram"],
+                projects: {
+                    kicker: "Proyek",
+                    title: "Proyek Terbaru",
+                    copy: "Pilihan karya terbaru saya yang berfokus pada latihan pengembangan web, antarmuka yang lebih rapi, dan alur penggunaan yang bermanfaat.",
+                    stats: ["TOTAL DIBUAT", "KASUS BELAJAR", "PROFIL AKTIF"],
+                    descriptions: [
+                        "Aplikasi web untuk menampilkan data buku, menelusuri katalog, dan memudahkan pencarian informasi dengan alur pencarian yang sederhana.",
+                        "Sistem manajemen perpustakaan sekolah dengan data buku, anggota, dan transaksi peminjaman menggunakan logika CRUD.",
+                        "Aplikasi produktivitas sederhana dengan fitur tambah, hapus, dan selesaikan tugas menggunakan localStorage untuk penyimpanan.",
+                        "Proyek website e-commerce sederhana dengan penelusuran produk, alur belanja, dan tampilan etalase yang lebih bersih.",
+                        "Proyek website cafe yang berfokus pada penyajian menu, branding yang lebih rapi, dan layout ramah pengguna untuk bisnis makanan modern."
+                    ],
+                    preview: "Lihat"
+                },
+                about: {
+                    title: "Tentang Saya",
+                    subtitle: "Perkenalan singkat tentang diri saya di dunia pengembangan web",
+                    hello: `Halo Dunia <span class="wave-hand" aria-hidden="true">&#128075;</span>`,
+                    paragraphs: [
+                        `Hai, saya <strong>Bima Junestifa</strong>, pelajar di <strong>SMK Wikrama 1 Garut</strong> yang senang belajar lewat praktik proyek nyata, membangun antarmuka, dan terus meningkatkan kualitas desain.`,
+                        "Saya adalah siswa Rekayasa Perangkat Lunak dengan pengalaman coding langsung dari tugas sekolah dan proyek pribadi. Saya senang memecahkan masalah dan mengubah ide menjadi solusi digital yang sederhana dan berguna.",
+                        "Saya pernah mengerjakan proyek seperti website katalog buku, sistem sekolah, aplikasi to-do list, dan alat pencatat keuangan. Setiap proyek membantu saya meningkatkan logika, tata letak, dan rasa percaya diri dalam membangun dengan kode.",
+                        "Saya tertarik dengan kekuatan AI dan alat modern untuk mempercepat proses pengembangan. Perjalanan ini terus mempertajam kemampuan saya dan memperkuat kecintaan saya pada teknologi."
+                    ]
+                },
+                skills: {
+                    title: "Teknologi yang Saya Gunakan &#128640;",
+                    copy: "Tumpukan teknologi yang saat ini saya gunakan untuk proyek web, pekerjaan antarmuka, dan alur kerja yang dibantu AI. Bagian ini saya rapikan agar tetap nyaman dibaca di mode terang maupun gelap.",
+                    labels: [
+                        `<i class="fas fa-language"></i> Bahasa`,
+                        `<i class="fas fa-layer-group"></i> Frontend`,
+                        `<i class="fas fa-database"></i> Backend`,
+                        `<i class="fas fa-robot"></i> AI &amp; Tools`
+                    ]
+                },
+                certifications: {
+                    kicker: "Pencapaian",
+                    title: "Sertifikasi &amp; <span>Penghargaan</span>",
+                    copy: "Kumpulan pertumbuhan profesional dan praktik akademik melalui sertifikasi serta pencapaian. Tautan sertifikat siap untuk kamu sesuaikan nanti.",
+                    summary: ["TOTAL", "AKADEMIK", "SLOT SIAP"],
+                    view: "Lihat",
+                    cardTitles: [
+                        "Sertifikat Dicoding Git &amp; GitHub",
+                        "RevoU HTML, CSS, Tailwind, dan JavaScript",
+                        "Slot Sertifikat Tambahan"
+                    ],
+                    cardDescriptions: [
+                        "Tautan sertifikat Dicoding untuk materi Git dan GitHub sudah terpasang pada kartu ini.",
+                        "Tautan sertifikat RevoU sudah aktif pada kartu ini dan siap dibuka langsung dari halaman portfolio.",
+                        "Kartu ketiga ini disiapkan untuk sertifikat berikutnya yang ingin kamu tambahkan nanti."
+                    ],
+                    badges: ["AKADEMIK", "AKADEMIK", "SIAP"],
+                    next: "BERIKUTNYA"
+                },
+                contributions: {
+                    title: "Kontribusi",
+                    link: "Kunjungi GitHub",
+                    copy: "Bagian ini sekarang menggunakan data publik dari halaman profil GitHub kamu. Diambil dari <code>github.com/bimajunestifa</code> pada 24 April 2026.",
+                    stats: ["Pengikut", "Mengikuti", "Repositori"],
+                    legend: "Grafik GitHub publik dari output README profil kamu"
+                },
+                footer: "&copy; 2026 Dibuat oleh Bima Junestifa | Hak cipta dilindungi.",
+                dockLabels: ["Beranda", "Coding", "Proyek", "Tentang", "Tech Stack"],
+                themeToggle: "Ganti Tema",
+                ai: {
+                    buttonAria: "Buka asisten Bimkidz AI",
+                    panelAria: "Asisten Bimkidz AI",
+                    title: "Bimkidz AI",
+                    subtitle: "Asisten portfolio berbasis AI",
+                    intro: "Halo, saya Bimkidz AI. Kamu bisa tanya tentang project, skill, sertifikat, atau profil Bima dari website ini.",
+                    ready: "Bimkidz AI siap dipakai setelah API key dihubungkan.",
+                    placeholder: "Tanya apa saja tentang portfolio ini...",
+                    thinking: "Bimkidz AI sedang berpikir...",
+                    errorMessage: "Bimkidz AI belum aktif penuh. Pastikan API key OpenAI sudah dihubungkan di server.",
+                    errorStatus: "Gagal menghubungi Bimkidz AI.",
+                    closeAria: "Tutup panel AI"
+                }
+            }
+        };
+
+        let currentLanguage = "en";
+
+        function applyLanguage(lang) {
+            const nextLanguage = translations[lang] ? lang : "en";
+            const t = translations[nextLanguage];
+
+            currentLanguage = nextLanguage;
+            document.documentElement.lang = nextLanguage;
+            localStorage.setItem("bima-language", nextLanguage);
+
+            setNodeText(langToggle, t.langButton);
+            langToggle.setAttribute("aria-label", t.langButtonAria);
+
+            setNodeHTML(talkPill, `<i class="far fa-message"></i> ${t.talkPill}`);
+            talkPill.setAttribute("aria-label", t.talkPillAria);
+
+            if (heroTitleLines[1]) {
+                heroTitleLines[1].textContent = t.heroLineTwo;
+            }
+
+            setNodeHTML(heroSubtitle, t.heroSubtitle);
+            heroMetricItems.forEach((item, index) => setNodeHTML(item, t.heroMetrics[index]));
+            setNodeHTML(resumeButton, `<i class="fas fa-arrow-down"></i> ${t.resume}`);
+
+            if (heroMiniLinkItems[0]) {
+                setNodeHTML(heroMiniLinkItems[0], `<i class="fas fa-arrow-turn-down"></i> ${t.heroLinks[0]}`);
+            }
+            if (heroMiniLinkItems[1]) {
+                setNodeHTML(heroMiniLinkItems[1], `<i class="fab fa-github"></i> ${t.heroLinks[1]}`);
+            }
+            if (heroMiniLinkItems[2]) {
+                setNodeHTML(heroMiniLinkItems[2], `<i class="fab fa-linkedin"></i> ${t.heroLinks[2]}`);
+            }
+
+            spotlightTitleItems.forEach((item, index) => renderScrollLetterTitle(item, t.spotlightTitles[index]));
+            spotlightMetaItems.forEach((group, groupIndex) => {
+                const spans = group.querySelectorAll("span");
+                spans.forEach((span, spanIndex) => {
+                    setNodeHTML(span, t.spotlightMeta[groupIndex][spanIndex]);
+                });
+            });
+            spotlightActionItems.forEach((item, index) => setNodeText(item, t.spotlightButtons[index]));
+
+            setNodeText(projectsKicker, t.projects.kicker);
+            setNodeText(projectsTitle, t.projects.title);
+            setNodeText(projectsCopy, t.projects.copy);
+            projectStatLabels.forEach((item, index) => setNodeText(item, t.projects.stats[index]));
+            projectCards.forEach((card, index) => {
+                const description = card.querySelector(".project-content p");
+                setNodeText(description, t.projects.descriptions[index]);
+            });
+            projectPreviewButtons.forEach((button) => setNodeText(button, t.projects.preview));
+
+            setNodeText(aboutTitle, t.about.title);
+            setNodeText(aboutSubtitle, t.about.subtitle);
+            setNodeHTML(aboutHello, t.about.hello);
+            aboutParagraphs.forEach((paragraph, index) => setNodeHTML(paragraph, t.about.paragraphs[index]));
+
+            setNodeHTML(techHeaderTitle, t.skills.title);
+            setNodeText(techHeaderCopy, t.skills.copy);
+            techLabels.forEach((label, index) => setNodeHTML(label, t.skills.labels[index]));
+
+            setNodeText(certKicker, t.certifications.kicker);
+            setNodeHTML(certTopTitle, t.certifications.title);
+            setNodeText(certTopCopy, t.certifications.copy);
+            certSummaryLabels.forEach((label, index) => setNodeText(label, t.certifications.summary[index]));
+            certViewButtons.forEach((button) => setNodeHTML(button, `<i class="fas fa-arrow-up-right-from-square"></i> ${t.certifications.view}`));
+
+            certCards.forEach((card, index) => {
+                const title = card.querySelector(".cert-content h3");
+                const description = card.querySelector(".cert-content p");
+                const badge = card.querySelector(".cert-pill");
+                const smallDate = card.querySelector(".cert-badges span:last-child");
+
+                setNodeHTML(title, t.certifications.cardTitles[index]);
+                setNodeText(description, t.certifications.cardDescriptions[index]);
+
+                if (badge) {
+                    if (index < 2) {
+                        setNodeHTML(badge, `<i class="fas fa-award"></i> ${t.certifications.badges[index]}`);
+                    } else {
+                        setNodeHTML(badge, `<i class="fas fa-plus"></i> ${t.certifications.badges[index]}`);
+                    }
+                }
+
+                if (smallDate && index === 2) {
+                    setNodeHTML(smallDate, `<i class="far fa-calendar"></i> ${t.certifications.next}`);
+                }
+            });
+
+            setNodeHTML(contribTitle, `<i class="fa-brands fa-github"></i> ${t.contributions.title}`);
+            setNodeHTML(contribLink, `${t.contributions.link} <i class="fas fa-code-branch"></i>`);
+            setNodeHTML(contribCopy, t.contributions.copy);
+            contribStatLabels.forEach((label, index) => setNodeText(label, t.contributions.stats[index]));
+            setNodeText(contribLegend, t.contributions.legend);
+
+            setNodeHTML(footerCopy, t.footer);
+
+            dockLinks.forEach((link, index) => {
+                link.setAttribute("aria-label", t.dockLabels[index]);
+            });
+            themeToggle.setAttribute("aria-label", t.themeToggle);
+
+            aiToggle.setAttribute("aria-label", t.ai.buttonAria);
+            aiPanel.setAttribute("aria-label", t.ai.panelAria);
+            setNodeText(document.querySelector(".ai-panel-title strong"), t.ai.title);
+            setNodeText(document.querySelector(".ai-panel-title span"), t.ai.subtitle);
+            aiClose.setAttribute("aria-label", t.ai.closeAria);
+            aiInput.placeholder = t.ai.placeholder;
+
+            if (aiMessages.firstElementChild && aiMessages.firstElementChild.classList.contains("assistant")) {
+                setNodeText(aiMessages.firstElementChild, t.ai.intro);
+            }
+            setAiStatus(t.ai.ready);
+        }
+
         resumeButton.addEventListener("click", () => {
             window.print();
         });
@@ -2267,6 +2688,10 @@
         themeToggle.addEventListener("click", () => {
             const nextMode = body.classList.contains("theme-dark") ? "light" : "dark";
             applyTheme(nextMode);
+        });
+
+        langToggle.addEventListener("click", () => {
+            applyLanguage(currentLanguage === "id" ? "en" : "id");
         });
 
         aiToggle.addEventListener("click", () => {
@@ -2306,7 +2731,7 @@
 
             addAiMessage("user", message);
             aiInput.value = "";
-            setAiStatus("Bimkidz AI sedang berpikir...");
+            setAiStatus(translations[currentLanguage].ai.thinking);
 
             try {
                 const response = await fetch("api/chat.php", {
@@ -2327,36 +2752,15 @@
                 }
 
                 addAiMessage("assistant", result.reply);
-                setAiStatus("Bimkidz AI siap dipakai.");
+                setAiStatus(translations[currentLanguage].ai.ready);
             } catch (error) {
-                addAiMessage("assistant", "Bimkidz AI belum aktif penuh. Pastikan API key OpenAI sudah dihubungkan di server.");
-                setAiStatus("Gagal menghubungi Bimkidz AI.");
+                addAiMessage("assistant", translations[currentLanguage].ai.errorMessage);
+                setAiStatus(translations[currentLanguage].ai.errorStatus);
             }
         });
 
-        document.querySelectorAll("[data-scroll-letter]").forEach((title) => {
-            const fullText = title.dataset.scrollLetter || title.textContent.trim();
-            const words = fullText.split(/\s+/);
-            title.setAttribute("aria-label", fullText);
-            title.textContent = "";
-
-            let charIndex = 0;
-            words.forEach((word) => {
-                const wordSpan = document.createElement("span");
-                wordSpan.className = "scroll-letter-word";
-
-                [...word].forEach((char) => {
-                    const charSpan = document.createElement("span");
-                    charSpan.className = "scroll-letter-char";
-                    charSpan.textContent = char;
-                    charSpan.style.setProperty("--char-delay", `${charIndex * 0.07}s`);
-                    wordSpan.appendChild(charSpan);
-                    charIndex += 1;
-                });
-
-                title.appendChild(wordSpan);
-            });
-        });
+        const savedLanguage = localStorage.getItem("bima-language");
+        applyLanguage(savedLanguage === "id" || savedLanguage === "en" ? savedLanguage : "en");
 
         function playScrollLetterReveal(scope) {
             scope.querySelectorAll("[data-scroll-letter]").forEach((title) => {
